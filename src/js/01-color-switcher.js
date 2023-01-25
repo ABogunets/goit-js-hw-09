@@ -13,7 +13,6 @@ stopBtn.addEventListener("click", onStopClick);
 
 function onStartClick() {
   timerId = setInterval(() => {
-    console.log('Timer started');
     startBtn.disabled = true;
     stopBtn.disabled = false;
     bodyEl.style.backgroundColor = getRandomHexColor();
