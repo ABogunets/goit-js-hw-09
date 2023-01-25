@@ -5,13 +5,6 @@ import "flatpickr/dist/flatpickr.min.css";
  // Notify import
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import "notiflix/dist/notiflix-3.2.6.min.css";
-// Notify.success('Sol lucet omnibus');
-// Notify.failure('Qui timide rogat docet negare');
-// Notify.warning('Memento te hominem esse');
-// Notify.info('Cogito ergo sum');
-
-let selectedDayTimeMs = 0;
-let timerId = 0;
 
 // Refs
 const inputRef = document.getElementById('datetime-picker');
@@ -30,34 +23,37 @@ const options = {
     defaultDate: new Date(),
     minuteIncrement: 1,
       onClose(selectedDates) {
-        selectedDayTimeMs = selectedDates[0].getTime();//selected Unix(time and date) in ms
-        console.log('selectedDayTimeMs :>> ', selectedDayTimeMs);
-        console.log('nowdateMs ', options.defaultDate.getTime());
-        if ((new Date().getTime() - selectedDates[0].getTime()) > 0) { Notify.warning("Please choose a date in the future"); }
+        if ((new Date().getTime() - selectedDates[0].getTime()) > 0)
+        { Notify.warning("Please choose a date in the future"); }
         else {startBtnRef.disabled = false}
       },
   };
 flatpickr(inputRef, options); 
 
+let timerId = 0;
+
 // Countdown timer start by click
 startBtnRef.addEventListener('click', () => {
-  timerId = setInterval(countDownDayTime, 1000);
+  timerId = setInterval(onTimer, 1000);
 });
 
-function countDownDayTime() {
-const currentDayTimeMs = Date.now();
-const deltaTime = selectedDayTimeMs - currentDayTimeMs;
-// console.log(deltaTime);
-  updateDataTimeFace(deltaTime);
+function onTimer() {
+  startBtnRef.disabled = true;
+  inputRef.disabled = true;
+  const selectedDateMs = new Date(inputRef.value);//selected Date-Time in ms 
+  const currentDateMs = Date.now();//current Date-Time in ms
+  const deltaTimeMs = selectedDateMs - currentDateMs;//remained time in ms
   
-  if (deltaTime <= 0) {
+  updateTimerBoard(deltaTimeMs);
+  if (deltaTimeMs <= 0) {
     clearInterval(timerId);
-    updateDataTimeFace(0);
-    startBtnRef.disabled = true;
+    updateTimerBoard(0);
+    // startBtnRef.disabled = false;
+    // inputRef.disabled = false;
+    }
   }
-}
 
-function updateDataTimeFace(timeMs) {
+function updateTimerBoard(timeMs) {
 const { days, hours, minutes, seconds } = convertMs(timeMs);
   spanDaysRef.textContent = days;
   spanHoursRef.textContent = hours;
