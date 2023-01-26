@@ -3,12 +3,12 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import "notiflix/dist/notiflix-3.2.6.min.css";
 
 //Refs
-const inputRef = document.querySelector('form');
+const formRef = document.querySelector('form');
 const firstDelayRef = document.querySelector('[name="delay"]');
 const delayStepRef = document.querySelector('[name="step"]');
 const amountRef = document.querySelector('[name="amount"]');
 
-inputRef.addEventListener('submit', onFormSubmit);
+formRef.addEventListener('submit', onFormSubmit);
 
 function onFormSubmit(e) {
   e.preventDefault();
@@ -26,7 +26,9 @@ function onFormSubmit(e) {
       .catch(({ position, delay }) => {
         // console.log(`❌ Rejected promise ${position} in ${delay}ms`);
         Notify.failure(`Rejected promise ${position} in ${delay}ms`);
-      });
+      })
+      .finally(() => { if (promiseNumber === amount) formRef.reset() })
+    
     promiseDelay += delayStep;
   }
 } 
